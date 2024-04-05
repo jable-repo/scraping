@@ -3,6 +3,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { extractCurrency, extractDescription, extractPrice } from "../utils";
+import { Console } from "console";
 
 export async function scrapeAmazonProduct(url: string) {
   if (!url) return;
@@ -30,10 +31,24 @@ export async function scrapeAmazonProduct(url: string) {
 
     // Extract the product title
     const title = $("#productTitle").text().trim();
+    // const currentPrice = extractPrice(
+    //   $("#corePriceDisplay_desktop_feature_div > div > span.a-price-whole")
+    //   // $(".a.size.base.a-color-price"),
+    //   // $(".a-button-selected .a-color-base")
+    // );
+
+    // const currentPrice2 = extractPrice(
+    //   $(
+    //     ".a-column.a-span12.a-text-left > div > span.a-price.a-text-normal.aok-align-center.reinventPriceAccordionT2 > span > .a-price-whole"
+    //   )
+    // );
+
     const currentPrice = extractPrice(
-      $(".priceToPay span.a-price-whole"),
-      $(".a.size.base.a-color-price"),
-      $(".a-button-selected .a-color-base")
+      $(".a-column.a-span12.a-text-left > div"),
+      $(
+        "span.a-price.a-text-normal.aok-align-center.reinventPriceAccordionT2 > span"
+      ),
+      $(".a-price-whole")
     );
 
     const originalPrice = extractPrice(
@@ -79,8 +94,6 @@ export async function scrapeAmazonProduct(url: string) {
       highestPrice: Number(originalPrice) || Number(currentPrice),
       averagePrice: Number(currentPrice) || Number(originalPrice),
     };
-
-    console.log(data);
 
     return data;
   } catch (error: any) {
